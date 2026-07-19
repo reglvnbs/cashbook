@@ -1,0 +1,17 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+data/*
+!data/.gitkeep
+build/*
+!build/.gitkeep
+*.db
+*.db-wal
+*.db-shm
+*.log
+.DS_Store
+
