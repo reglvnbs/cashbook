@@ -1,0 +1,23 @@
+{
+  "server": {
+    "host": {"desc": "服务监听地址", "type": "str", "value": "0.0.0.0"},
+    "port": {"desc": "服务监听端口，范围 1-65535", "type": "int", "value": 8000}
+  },
+  "database": {
+    "path": {"desc": "SQLite 数据库路径", "type": "str", "value": "data/cashbook.db"}
+  },
+  "logging": {
+    "level": {"desc": "日志级别", "type": "str", "value": "INFO"},
+    "console": {"desc": "是否输出控制台日志", "type": "bool", "value": true},
+    "file": {"desc": "文件日志路径", "type": "str", "value": "data/logs/cashbook.log"},
+    "max_bytes": {"desc": "单个日志文件轮转大小（字节）", "type": "int", "value": 5242880}
+  },
+  "transactions": {
+    "page_size": {"desc": "流水列表每页数量，范围 1-100", "type": "int", "value": 20}
+  },
+  "deepseek": {
+    "api_url": {"desc": "DeepSeek Chat Completions API 地址", "type": "str", "value": "https://api.deepseek.com/chat/completions"},
+    "model": {"desc": "DeepSeek 模型名称", "type": "str", "value": "deepseek-chat"},
+    "timeout": {"desc": "DeepSeek 请求超时（秒）", "type": "int", "value": 20}
+  }
+}

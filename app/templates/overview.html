@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}总览{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div><p class="eyebrow">财务概况</p><h1>总览</h1></div>
+  <div class="shared-actions"><button class="button secondary js-ai-transaction">AI 记账</button><button class="button primary js-manual-transaction">＋ 记一笔</button></div>
+</header>
+
+<section class="panel date-panel" aria-label="日期范围">
+  <form id="overview-date-form" class="date-range-form">
+    <label class="field compact"><span>开始日期</span><input type="date" name="start_date" max="{{ today }}"></label>
+    <span class="date-separator">至</span>
+    <label class="field compact"><span>结束日期</span><input type="date" name="end_date" max="{{ today }}"></label>
+    <button class="button secondary" type="submit">查看</button>
+  </form>
+</section>
+
+<section id="summary-cards" class="summary-grid" aria-live="polite">
+  <article class="summary-card balance"><p>结余</p><strong>—</strong><small>收入减去支出</small></article>
+  <article class="summary-card income"><p>收入</p><strong>—</strong><small>所选日期内</small></article>
+  <article class="summary-card expense"><p>支出</p><strong>—</strong><small>所选日期内</small></article>
+</section>
+
+<section class="panel section-panel">
+  <div class="section-heading"><div><p class="eyebrow">Expense</p><h2>支出分类</h2></div><span id="expense-total" class="section-meta"></span></div>
+  <div id="expense-categories" class="category-breakdown loading-block">正在读取…</div>
+</section>
+
+<section id="budget-summary-panel" class="panel section-panel" hidden>
+  <div class="section-heading"><div><p class="eyebrow">Budget</p><h2>预算摘要</h2></div><a href="{{ url_for('pages.budget_page') }}" class="text-link">查看预算 →</a></div>
+  <div id="budget-summary"></div>
+</section>
+{% endblock %}
+{% block scripts %}<script type="module" src="{{ url_for('static', filename='js/overview.js') }}"></script>{% endblock %}
+

@@ -1,0 +1,55 @@
+<dialog id="transaction-dialog" class="sheet-dialog">
+  <form id="transaction-form" class="dialog-card">
+    <header class="dialog-header">
+      <div><p class="eyebrow">流水</p><h2 id="transaction-dialog-title">记一笔</h2></div>
+      <button type="button" class="icon-button js-close" aria-label="关闭">×</button>
+    </header>
+    <input type="hidden" name="id">
+    <div class="type-switch" role="group" aria-label="收支类型">
+      <label><input type="radio" name="transaction_type" value="expense" checked><span>支出</span></label>
+      <label><input type="radio" name="transaction_type" value="income"><span>收入</span></label>
+    </div>
+    <label class="field amount-field"><span>金额</span><span class="amount-input"><b>¥</b><input name="amount" inputmode="decimal" autocomplete="off" placeholder="0.00" required></span></label>
+    <div class="form-grid">
+      <label class="field"><span>分类</span><select name="category_id" required></select></label>
+      <label class="field"><span>日期</span><input name="occurred_on" type="date" required></label>
+    </div>
+    <label class="field"><span>备注 <small>选填</small></span><input name="note" maxlength="200" placeholder="记录这笔钱的用途"></label>
+    <p class="form-error" role="alert"></p>
+    <footer class="dialog-actions">
+      <button type="button" id="delete-transaction" class="button danger ghost" hidden>删除</button>
+      <span class="action-spacer"></span>
+      <button type="button" class="button secondary js-close">取消</button>
+      <button type="submit" class="button primary">保存</button>
+    </footer>
+  </form>
+</dialog>
+
+<dialog id="ai-dialog" class="sheet-dialog wide-dialog">
+  <div class="dialog-card">
+    <header class="dialog-header">
+      <div><p class="eyebrow">DeepSeek</p><h2>AI 记账</h2></div>
+      <button type="button" class="icon-button js-close" aria-label="关闭">×</button>
+    </header>
+    <section id="ai-input-stage">
+      <label class="field"><span>说说发生了什么</span><textarea id="ai-text" maxlength="1000" rows="5" placeholder="例如：昨天午饭 32 元，坐地铁 4 元"></textarea></label>
+      <p class="field-help">AI 只生成草稿；确认无误后才会写入账本。</p>
+      <p class="form-error" role="alert"></p>
+      <footer class="dialog-actions">
+        <button type="button" class="button secondary js-close">取消</button>
+        <button type="button" id="parse-ai" class="button primary">识别流水</button>
+      </footer>
+    </section>
+    <section id="ai-draft-stage" hidden>
+      <div class="draft-heading"><p>请核对并修改识别结果</p><span id="draft-count"></span></div>
+      <div id="draft-list" class="draft-list"></div>
+      <p class="form-error" role="alert"></p>
+      <footer class="dialog-actions">
+        <button type="button" id="back-to-ai-input" class="button secondary">返回</button>
+        <span class="action-spacer"></span>
+        <button type="button" id="save-ai-drafts" class="button primary">确认并保存</button>
+      </footer>
+    </section>
+  </div>
+</dialog>
+

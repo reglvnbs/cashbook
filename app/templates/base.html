@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}{% endblock %} · 账本</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body data-today="{{ today|default('') }}">
+  <aside class="sidebar" aria-label="主导航">
+    <a class="brand" href="{{ url_for('pages.overview_page') }}" aria-label="账本首页">
+      <span class="brand-mark">¥</span><span>账本</span>
+    </a>
+    <nav class="nav-list">
+      <a href="{{ url_for('pages.overview_page') }}" class="nav-item {% if active_page == 'overview' %}active{% endif %}">
+        <span class="nav-symbol">⌂</span><span>总览</span>
+      </a>
+      <a href="{{ url_for('pages.transactions_page') }}" class="nav-item {% if active_page == 'transactions' %}active{% endif %}">
+        <span class="nav-symbol">≡</span><span>流水</span>
+      </a>
+      <a href="{{ url_for('pages.budget_page') }}" class="nav-item {% if active_page == 'budget' %}active{% endif %}">
+        <span class="nav-symbol">◎</span><span>预算</span>
+      </a>
+    </nav>
+    <p class="sidebar-foot">本地数据 · 人民币</p>
+  </aside>
+
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <nav class="mobile-nav" aria-label="移动端主导航">
+    <a href="{{ url_for('pages.overview_page') }}" class="{% if active_page == 'overview' %}active{% endif %}"><span>⌂</span>总览</a>
+    <a href="{{ url_for('pages.transactions_page') }}" class="{% if active_page == 'transactions' %}active{% endif %}"><span>≡</span>流水</a>
+    <a href="{{ url_for('pages.budget_page') }}" class="{% if active_page == 'budget' %}active{% endif %}"><span>◎</span>预算</a>
+  </nav>
+
+  {% if active_page in ['overview', 'transactions'] %}
+    {% include '_transaction_dialogs.html' %}
+  {% endif %}
+  <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

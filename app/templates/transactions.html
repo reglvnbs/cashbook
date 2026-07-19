@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}流水{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div><p class="eyebrow">全部记录</p><h1>流水</h1></div>
+  <div class="shared-actions"><button class="button secondary js-ai-transaction">AI 记账</button><button class="button primary js-manual-transaction">＋ 记一笔</button></div>
+</header>
+
+<section class="panel filter-panel">
+  <form id="transaction-filters">
+    <div class="filter-top">
+      <label class="field search-field"><span>关键词</span><input name="keyword" type="search" placeholder="搜索备注或分类"></label>
+      <label class="field"><span>开始日期</span><input name="start_date" type="date" max="{{ today }}"></label>
+      <label class="field"><span>结束日期</span><input name="end_date" type="date" max="{{ today }}"></label>
+      <button class="button primary filter-submit" type="submit">查询</button>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">收支</span>
+      <label class="check-chip"><input type="checkbox" name="types" value="expense"><span>支出</span></label>
+      <label class="check-chip"><input type="checkbox" name="types" value="income"><span>收入</span></label>
+      <button type="button" id="reset-filters" class="text-button">清空筛选</button>
+    </div>
+    <div class="filter-row category-filter-row"><span class="filter-label">分类</span><div id="category-filter" class="chip-wrap"></div></div>
+  </form>
+</section>
+
+<section class="panel list-panel">
+  <div class="section-heading"><div><p class="eyebrow">Records</p><h2>收支记录</h2></div><span id="transaction-total" class="section-meta"></span></div>
+  <div id="transaction-list" class="loading-block">正在读取…</div>
+  <nav id="pagination" class="pagination" aria-label="流水分页"></nav>
+</section>
+{% endblock %}
+{% block scripts %}<script type="module" src="{{ url_for('static', filename='js/transactions.js') }}"></script>{% endblock %}
+

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}预算{% endblock %}
+{% block content %}
+<header class="page-header budget-page-header">
+  <div><p class="eyebrow">月度计划</p><h1>预算</h1></div>
+  <label class="month-picker"><span>选择月份</span><input id="budget-month" type="month" value="{{ current_month }}"></label>
+</header>
+
+<section class="panel budget-panel">
+  <div class="section-heading budget-heading">
+    <div><p class="eyebrow">Monthly budget</p><h2>本月预算</h2></div>
+    <div id="budget-view-actions"><button id="edit-budget" class="button primary">编辑预算</button></div>
+    <div id="budget-edit-actions" class="inline-actions" hidden><button id="cancel-budget" class="button secondary">取消</button><button id="save-budget" class="button primary">保存预算</button></div>
+  </div>
+  <p id="budget-error" class="form-error" role="alert"></p>
+  <div id="budget-content" class="loading-block">正在读取…</div>
+</section>
+{% endblock %}
+{% block scripts %}<script type="module" src="{{ url_for('static', filename='js/budget.js') }}"></script>{% endblock %}
+
