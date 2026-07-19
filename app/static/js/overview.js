@@ -35,10 +35,17 @@ async function loadOverview() {
     else {
       panel.hidden = false;
       const total = data.budget_summary.total_budget;
-      document.querySelector('#budget-summary').innerHTML = total.amount ? `<div class="budget-summary-card ${budgetClass(total.usage_percent)}">
+      const noBudget = total.amount !== null && Number(total.amount) === 0;
+      document.querySelector('#budget-summary').innerHTML = noBudget ? `<div class="budget-summary-card no-budget">
+        <div><span>已使用</span><strong>${money(total.used)}</strong></div><div><span>总预算</span><strong>没有预算</strong></div><div><span>剩余</span><strong>${money(total.remaining)}</strong></div>
+        <div class="progress-track budget-progress"><span></span></div><p>100%</p>
+      </div>` : total.amount ? `<div class="budget-summary-card ${budgetClass(total.usage_percent)}">
         <div><span>已使用</span><strong>${money(total.used)}</strong></div><div><span>总预算</span><strong>${money(total.amount)}</strong></div><div><span>剩余</span><strong>${money(total.remaining)}</strong></div>
         <div class="progress-track budget-progress"><span style="width:${Math.min(total.usage_percent, 100)}%"></span></div><p>已使用 ${total.usage_percent.toFixed(2)}%</p>
-      </div>` : '<div class="empty-state compact-empty">本月总预算尚未设置</div>';
+      </div>` : `<div class="budget-summary-card unset">
+        <div><span>已使用</span><strong>${money(total.used)}</strong></div><div><span>总预算</span><strong>未设置</strong></div><div><span>剩余</span><strong>—</strong></div>
+        <div class="progress-track budget-progress"><span></span></div><p>未设置预算</p>
+      </div>`;
     }
   } catch (error) {
     categoryList.className = 'error-state'; categoryList.textContent = error.message;
@@ -48,4 +55,3 @@ async function loadOverview() {
 dateForm.addEventListener('submit', (event) => { event.preventDefault(); loadOverview(); });
 await initTransactionActions(loadOverview);
 await loadOverview();
-

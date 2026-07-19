@@ -58,15 +58,25 @@ if ! [[ "$port" =~ ^[0-9]+$ ]] || ((port < 1 || port > 65535)); then
   exit 2
 fi
 
-python_bin="${PYTHON_BIN:-python3.13}"
-if ! command -v "$python_bin" >/dev/null 2>&1; then
-  echo "未找到 Python 3.13；可通过 PYTHON_BIN 指定 Python 3.13 可执行文件" >&2
-  exit 1
+if [[ -n "${PYTHON_BIN:-}" ]]; then
+  python_bin="$PYTHON_BIN"
+  if ! command -v "$python_bin" >/dev/null 2>&1; then
+    echo "PYTHON_BIN 指定的 Python 不存在: $python_bin" >&2
+    exit 1
+  fi
+elif command -v python3.13 >/dev/null 2>&1; then
+  python_bin="python3.13"
+else
+  python_bin="python3"
+  if ! command -v "$python_bin" >/dev/null 2>&1; then
+    echo "未找到可用的 Python；请安装 Python 3.13 或通过 PYTHON_BIN 指定" >&2
+    exit 1
+  fi
+  echo "WARNING: 未找到 Python 3.13，回退使用系统 Python: $(command -v "$python_bin")" >&2
 fi
 version="$($python_bin -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
-if [[ "$version" != "3.13" && "${CASHBOOK_ALLOW_PYTHON_MISMATCH:-}" != "1" ]]; then
-  echo "需要 Python 3.13，当前为 $version" >&2
-  exit 1
+if [[ "$version" != "3.13" ]]; then
+  echo "WARNING: 推荐使用 Python 3.13，当前使用 Python $version" >&2
 fi
 
 mkdir -p "$work_root"
@@ -79,6 +89,13 @@ rsync -a --delete \
 venv="$work_root/.venv"
 if $reset_env; then
   rm -rf "$venv"
+fi
+if [[ -x "$venv/bin/python" ]]; then
+  venv_version="$("$venv/bin/python" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+  if [[ "$venv_version" != "$version" ]]; then
+    echo "WARNING: Python 版本已从 $venv_version 变为 $version，正在重建隔离环境" >&2
+    rm -rf "$venv"
+  fi
 fi
 if [[ ! -x "$venv/bin/python" ]]; then
   "$python_bin" -m venv "$venv"

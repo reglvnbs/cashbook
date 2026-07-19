@@ -18,7 +18,7 @@
       <span class="filter-label">收支</span>
       <label class="check-chip"><input type="checkbox" name="types" value="expense"><span>支出</span></label>
       <label class="check-chip"><input type="checkbox" name="types" value="income"><span>收入</span></label>
-      <button type="button" id="reset-filters" class="text-button">清空筛选</button>
+      <button type="button" id="reset-filters" class="reset-filter-button"><span aria-hidden="true">↺</span> 重置</button>
     </div>
     <div class="filter-row category-filter-row"><span class="filter-label">分类</span><div id="category-filter" class="chip-wrap"></div></div>
   </form>
@@ -31,4 +31,3 @@
 </section>
 {% endblock %}
 {% block scripts %}<script type="module" src="{{ url_for('static', filename='js/transactions.js') }}"></script>{% endblock %}
-

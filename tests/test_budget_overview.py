@@ -42,3 +42,17 @@ def test_budget_rejects_incomplete_category_set(client, csrf_headers):
     assert response.status_code == 400
     assert response.json["error"]["code"] == "VALIDATION_ERROR"
 
+
+def test_zero_budget_is_saved_as_no_budget(client, csrf_headers):
+    response = client.put(
+        "/api/budgets/2026-01",
+        json={"total_budget": "0", "category_budgets": _all_category_budgets("0.00")},
+        headers=csrf_headers,
+    )
+    assert response.status_code == 200
+    data = response.json["data"]
+    assert data["total_budget"]["amount"] == "0.00"
+    assert data["total_budget"]["usage_percent"] == 100.0
+    assert data["category_budgets"][0]["amount"] == "0.00"
+    assert data["category_budgets"][0]["usage_percent"] == 100.0
+    assert all(item["amount"] is None for item in data["category_budgets"][1:])

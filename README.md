@@ -10,7 +10,7 @@
 
 ## 本地运行与测试
 
-开发和测试使用 Python 3.13，并且只通过隔离脚本启动：
+开发和测试优先使用 Python 3.13，并且只通过隔离脚本启动；未安装 3.13 时会显示警告并自动回退到系统 `python3`：
 
 ```text
 ./test.sh
@@ -28,4 +28,3 @@
 ```
 
 镜像打包、数据卷、更新及迁移步骤见 [离线部署指南](<docs/9. deployment-guide.md>)；工程、接口和页面规则分别见 `docs/0. engineering-design.md` 与 `docs/2. interface-design.md`。
-

@@ -11,6 +11,17 @@ def test_all_pages_have_required_structure(client):
     assert "AI 记账" in overview.text and "记一笔" in overview.text
     assert "transaction-filters" in transactions.text
     assert "budget-content" in budget.text
+    assert "budget-month-trigger" in budget.text
+    assert "month-menu" in budget.text
+    assert "month-chevron" not in budget.text
+    assert '<meta name="apple-mobile-web-app-capable" content="yes">' in overview.text
+    assert 'rel="manifest"' in overview.text
+
+    manifest = client.get("/static/manifest.webmanifest")
+    assert manifest.status_code == 200
+    assert manifest.json["start_url"] == "/"
+    assert manifest.json["scope"] == "/"
+    assert manifest.json["display"] == "standalone"
 
 
 def test_health_and_categories(client):
@@ -23,4 +34,3 @@ def test_health_and_categories(client):
         "transaction_type": "expense",
         "color": "#C77956",
     }
-

@@ -34,8 +34,43 @@ def close_db(_error: BaseException | None = None) -> None:
 
 
 def init_database(connection: sqlite3.Connection) -> None:
+    migrated = _migrate_zero_budget_support(connection)
     schema_path = Path(__file__).with_name("schema.sql")
     connection.executescript(schema_path.read_text(encoding="utf-8"))
+    if migrated:
+        current_app.logger.info("数据库结构升级完成: 支持零预算状态")
+
+
+def _migrate_zero_budget_support(connection: sqlite3.Connection) -> bool:
+    row = connection.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='budgets'"
+    ).fetchone()
+    if row is None or "amount_cents > 0" not in (row["sql"] or ""):
+        return False
+    with transaction(connection):
+        connection.execute("DROP INDEX IF EXISTS ux_budgets_total_month")
+        connection.execute("ALTER TABLE budgets RENAME TO budgets_before_zero_support")
+        connection.execute(
+            """
+            CREATE TABLE budgets (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                month TEXT NOT NULL CHECK (month GLOB '????-??'),
+                category_id INTEGER REFERENCES categories(id) ON DELETE RESTRICT,
+                amount_cents INTEGER NOT NULL CHECK (amount_cents >= 0),
+                updated_at TEXT NOT NULL,
+                UNIQUE (month, category_id)
+            )
+            """
+        )
+        connection.execute(
+            """
+            INSERT INTO budgets (id, month, category_id, amount_cents, updated_at)
+            SELECT id, month, category_id, amount_cents, updated_at
+            FROM budgets_before_zero_support
+            """
+        )
+        connection.execute("DROP TABLE budgets_before_zero_support")
+    return True
 
 
 @contextmanager
@@ -54,4 +89,3 @@ def init_app(app) -> None:
     app.teardown_appcontext(close_db)
     with app.app_context():
         init_database(get_db())
-

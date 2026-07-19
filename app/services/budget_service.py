@@ -29,13 +29,27 @@ class BudgetService:
     @staticmethod
     def _entry(amount: int | None, used: int) -> dict:
         remaining = amount - used if amount is not None else None
-        usage = round(used / amount * 100, 2) if amount is not None else None
+        usage = (
+            100.0
+            if amount == 0
+            else round(used / amount * 100, 2)
+            if amount is not None
+            else None
+        )
         return {
             "amount": format_amount(amount) if amount is not None else None,
             "used": format_amount(used),
             "remaining": format_amount(remaining) if remaining is not None else None,
             "usage_percent": usage,
         }
+
+    @staticmethod
+    def _parse_budget_amount(value: object, field: str) -> int | None:
+        if value is None or value == "":
+            return None
+        if str(value).strip() in {"0", "0.0", "0.00"}:
+            return 0
+        return parse_amount(value, field)
 
     def get(self, month_value: object, *, used_range: tuple[str, str] | None = None) -> dict:
         month = parse_month(month_value)
@@ -62,7 +76,7 @@ class BudgetService:
         if missing:
             raise ValidationError({name: "此字段必须提交" for name in sorted(missing)})
         total_raw = payload.get("total_budget")
-        total_amount = None if total_raw is None or total_raw == "" else parse_amount(total_raw, "total_budget")
+        total_amount = self._parse_budget_amount(total_raw, "total_budget")
         items = payload.get("category_budgets")
         if not isinstance(items, list):
             raise ValidationError({"category_budgets": "必须提交全部分类预算"})
@@ -78,7 +92,7 @@ class BudgetService:
             if category_id in values:
                 raise ValidationError({"category_budgets": "每个分类只能出现一次"})
             amount = item.get("amount")
-            values[category_id] = None if amount is None or amount == "" else parse_amount(
+            values[category_id] = self._parse_budget_amount(
                 amount, f"category_budgets.{index}.amount"
             )
         if set(values) != set(expense_ids):

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS budgets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     month TEXT NOT NULL CHECK (month GLOB '????-??'),
     category_id INTEGER REFERENCES categories(id) ON DELETE RESTRICT,
-    amount_cents INTEGER NOT NULL CHECK (amount_cents > 0),
+    amount_cents INTEGER NOT NULL CHECK (amount_cents >= 0),
     updated_at TEXT NOT NULL,
     UNIQUE (month, category_id)
 );
@@ -99,4 +99,3 @@ INSERT OR IGNORE INTO categories (id, name, transaction_type, color) VALUES
     (15, '红包', 'income', '#A96370'),
     (16, '退款', 'income', '#588BA5'),
     (17, '其他收入', 'income', '#6F7B83');
-

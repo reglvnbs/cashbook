@@ -3,7 +3,29 @@
 {% block content %}
 <header class="page-header budget-page-header">
   <div><p class="eyebrow">月度计划</p><h1>预算</h1></div>
-  <label class="month-picker"><span>选择月份</span><input id="budget-month" type="month" value="{{ current_month }}"></label>
+  <div class="month-picker">
+    <span>选择月份</span>
+    <div class="month-picker-shell">
+      <button type="button" id="previous-month" class="month-step" aria-label="上一个月">‹</button>
+      <div class="month-select-wrap">
+        <button type="button" id="budget-month-trigger" class="month-trigger" aria-haspopup="true" aria-expanded="false">
+          <span id="budget-month-label"></span>
+        </button>
+        <div id="month-menu" class="month-menu" hidden>
+          <div class="month-menu-header">
+            <button type="button" id="previous-year" aria-label="上一年">‹</button>
+            <strong id="picker-year"></strong>
+            <button type="button" id="next-year" aria-label="下一年">›</button>
+          </div>
+          <div class="month-grid">
+            {% for month in range(1, 13) %}<button type="button" data-month="{{ month }}">{{ month }}月</button>{% endfor %}
+          </div>
+        </div>
+      </div>
+      <button type="button" id="next-month" class="month-step" aria-label="下一个月">›</button>
+      <input id="budget-month" type="hidden" value="{{ current_month }}">
+    </div>
+  </div>
 </header>
 
 <section class="panel budget-panel">
@@ -17,4 +39,3 @@
 </section>
 {% endblock %}
 {% block scripts %}<script type="module" src="{{ url_for('static', filename='js/budget.js') }}"></script>{% endblock %}
-
